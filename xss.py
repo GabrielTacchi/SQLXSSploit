@@ -304,8 +304,12 @@ def xss_todos_campos_for_stored(url, driver):
                                 # Se o campo não for interagivel, segue normalmente (sem preenche-lo)
                                 pass
 
-                    # Verificar e clicar no botão de submit
-                    submit_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@type='submit'] | //button[@type='submit']")))
+                    # Aguarda até que o botão esteja presente na página
+                    try:
+                        submit_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//input[@type='submit'] | //button[@type='submit']")))
+                    except TimeoutException:
+                        submit_button = None
+                        pass
 
                     if submit_button:
                         submit_button.click()
