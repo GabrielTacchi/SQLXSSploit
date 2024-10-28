@@ -303,15 +303,9 @@ def sqli_em_opcao(url, driver):
 
             # Procurar elementos select novamente após recarregar a página
             select_elements = driver.find_elements(By.TAG_NAME, "select")
+
             # Procurar elementos select novamente após recarregar a página
             select_name = select_elements[i].get_attribute('name')
-            # Pega somente o primeiro elemento dos "selects"
-            select = Select(select_elements[i])
-            options = select.options
-
-            # Testar apenas a primeira opção
-            if options:
-                option = options[0]
 
             for payload in payloads:
                 # Verifica se a falha (vulnerabilidade) ocorre duas vezes
@@ -324,89 +318,98 @@ def sqli_em_opcao(url, driver):
                 # Recarregar a página para cada novo payload
                 driver.get(url)
 
-                # Escapar aspas simples e barras invertidas no payload
-                escaped_payload = payload.strip().replace("'", "\\'").replace("\\", "\\\\")
-
                 animacao_carregamento(progresso_total)
 
-                while True:
-                    try:
-                        # Alterar o valor da primeira opção para o payload
-                        driver.execute_script("arguments[0].setAttribute('value', arguments[1]);",option, escaped_payload)
+                # Procurar elementos select novamente após recarregar a página
+                select_elements = driver.find_elements(By.TAG_NAME, "select")
 
-                        # Selecionar a opção pelo texto
-                        select.select_by_visible_text(option.text)
+                # Pega somente o primeiro elemento dos "selects"
+                select = Select(select_elements[i])
+                options = select.options
 
-                        # Submeter o formulário (se houver)
-                        submit_button = driver.find_element(By.XPATH, "//input[@type='submit'] | //button[@type='submit']")
-                        if submit_button:
-                            submit_button.click()
+                # Testar apenas a primeira opção
+                if options:
+                    option = options[0]
 
-                        # Verificar a resposta após o envio
-                        response_text = driver.page_source
-                        erro_detectado, erro = verificar_erros_sql(driver, response_text)
+                    while True:
+                        try:
+                            # Alterar o valor da primeira opção para o payload
+                            driver.execute_script("arguments[0].setAttribute('value', arguments[1]);",option, payload)
 
-                        # Verifica se o campo interagido afeta a URL da página
-                        if driver.current_url != url and driver.current_url not in todas_urls:
-                            # Faz o parse da URL atual
-                            current_url_parsed = urlparse(driver.current_url)
+                            # Selecionar a opção pelo texto
+                            select.select_by_visible_text(option.text)
 
-                            # Constrói a query mantendo todas as chaves dos parâmetros, mesmo as que têm valores vazios ou especiais como "#"
-                            query_params = parse_qsl(current_url_parsed.query, keep_blank_values=True)
-                            nova_query = '&'.join(f"{key}=" for key, value in query_params)
+                            # Submeter o formulário (se houver)
+                            botoes_submit = driver.find_elements(By.XPATH, "//input[@type='submit'] | //button[@type='submit']")
 
-                            # Constrói a URL base sem os parâmetros
-                            url_com_nova_query = f"{current_url_parsed.scheme}://{current_url_parsed.netloc}{current_url_parsed.path}"
+                            if botoes_submit:
+                                botoes_submit[0].click()
 
-                            # Adiciona a nova query à URL, se existir
-                            if nova_query:
-                                url_com_nova_query += "?" + nova_query
-                            # Percorre a lista de URLs já capturadas
-                            for url_list in todas_urls:
-                                url_parsed = urlparse(url_list)
+                            # Verificar a resposta após o envio
+                            response_text = driver.page_source
+                            erro_detectado, erro = verificar_erros_sql(driver, response_text)
 
-                                # Constrói a query ignorando os valores para as URLs da lista
-                                query_params_list = parse_qsl(url_parsed.query, keep_blank_values=True)
-                                nova_query_p_url_normal = '&'.join(f"{key}=" for key, value in query_params_list)
-                                url_normal = f"{url_parsed.scheme}://{url_parsed.netloc}{url_parsed.path}"
+                            # Verifica se o campo interagido afeta a URL da página
+                            if driver.current_url != url and driver.current_url not in todas_urls:
+                                # Faz o parse da URL atual
+                                current_url_parsed = urlparse(driver.current_url)
 
-                                # Adiciona a query à URL, se existir
-                                if nova_query_p_url_normal:
-                                    url_normal += "?" + nova_query_p_url_normal
+                                # Constrói a query mantendo todas as chaves dos parâmetros, mesmo as que têm valores vazios ou especiais como "#"
+                                query_params = parse_qsl(current_url_parsed.query, keep_blank_values=True)
+                                nova_query = '&'.join(f"{key}=" for key, value in query_params)
 
-                                # Adiciona a URL normal à lista se não estiver presente
-                                if url_normal not in urls_sem_parametro:
-                                    urls_sem_parametro.append(url_normal)
+                                # Constrói a URL base sem os parâmetros
+                                url_com_nova_query = f"{current_url_parsed.scheme}://{current_url_parsed.netloc}{current_url_parsed.path}"
 
-                            # Verifica se a URL atual (com a query sem valores) já está armazenada
-                            if url_com_nova_query not in urls_sem_parametro:
-                                todas_urls.append(driver.current_url)
+                                # Adiciona a nova query à URL, se existir
+                                if nova_query:
+                                    url_com_nova_query += "?" + nova_query
+                                # Percorre a lista de URLs já capturadas
+                                for url_list in todas_urls:
+                                    url_parsed = urlparse(url_list)
 
-                        if erro_detectado:
-                            certeza_erro += 1
-                            if certeza_erro == 2:
-                                possiveis_falhas.append([[url], [select_name], [payload], ['N/A', 'N/A']])
-                                break
-                        else:
-                            break
+                                    # Constrói a query ignorando os valores para as URLs da lista
+                                    query_params_list = parse_qsl(url_parsed.query, keep_blank_values=True)
+                                    nova_query_p_url_normal = '&'.join(f"{key}=" for key, value in query_params_list)
+                                    url_normal = f"{url_parsed.scheme}://{url_parsed.netloc}{url_parsed.path}"
 
-                    except Exception:
-                        tentativas += 1
+                                    # Adiciona a query à URL, se existir
+                                    if nova_query_p_url_normal:
+                                        url_normal += "?" + nova_query_p_url_normal
 
-                        # Verificações nos erros do Exception
-                        response_text = driver.page_source
-                        erro_detectado, erro = verificar_erros_sql(driver, response_text)
+                                    # Adiciona a URL normal à lista se não estiver presente
+                                    if url_normal not in urls_sem_parametro:
+                                        urls_sem_parametro.append(url_normal)
 
-                        if erro_detectado:
-                            certeza_erro += 1
-                            tentativas -= 1
-                            if certeza_erro == 2:
-                                possiveis_falhas.append([[url], [select_name], [payload], ['N/A', 'N/A']])
+                                # Verifica se a URL atual (com a query sem valores) já está armazenada
+                                if url_com_nova_query not in urls_sem_parametro:
+                                    todas_urls.append(driver.current_url)
+
+                            if erro_detectado:
+                                certeza_erro += 1
+                                if certeza_erro == 2:
+                                    possiveis_falhas.append([[url], [select_name], [payload], ['N/A', 'N/A']])
+                                    break
+                            else:
                                 break
 
-                        # Caso tenha dado dois erros, passa próximo payload
-                        if tentativas >= 2:
-                            break
+                        except Exception:
+                            tentativas += 1
+
+                            # Verificações nos erros do Exception
+                            response_text = driver.page_source
+                            erro_detectado, erro = verificar_erros_sql(driver, response_text)
+
+                            if erro_detectado:
+                                certeza_erro += 1
+                                tentativas -= 1
+                                if certeza_erro == 2:
+                                    possiveis_falhas.append([[url], [select_name], [payload], ['N/A', 'N/A']])
+                                    break
+
+                            # Caso tenha dado dois erros, passa próximo payload
+                            if tentativas >= 2:
+                                break
 
         print("\r" + "[■■■■■■■■■■]completo!\n", end='', flush=True)
     except Exception as e:
@@ -791,7 +794,7 @@ def time_based_blind_sqli_em_opcao(url, driver):
                     option = options[0]  # Aqui, 'option' é um WebElement
 
                     # Obter o nome do campo a partir do select
-                    nome_campo = select_name  # Usando o nome do select, não da opção
+                    nome_campo = select_name
 
                     # Escapar aspas simples e barras invertidas no payload
                     escaped_payload = payload.strip().replace("'", "\\'").replace("\\", "\\\\")

@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 
 # Configuração do WebDriver com algumas opções para executar o navegador em modo headless e ignorar certos erros
 chrome_options = Options()
-chrome_options.add_argument(f"--headless=old")
+chrome_options.add_argument("--headless=old")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
